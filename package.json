@@ -7,8 +7,7 @@
     "dev:lan": "next dev -H 0.0.0.0",
     "build": "prisma generate && prisma migrate deploy && next build",
     "start": "next start",
-    "lint": "eslint",
-    "postinstall": "prisma generate"
+    "lint": "eslint"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
