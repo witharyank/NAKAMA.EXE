@@ -103,67 +103,75 @@ export default function DavyBackPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12 max-w-4xl">
-      <div className="text-center mb-10">
-        <div className="mx-auto w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center mb-6 text-accent border border-accent/20 shadow-inner">
-          <Compass className="w-10 h-10" />
+    <div className="container mx-auto px-8 py-16 max-w-5xl">
+      <div className="text-center mb-16 border-b-2 border-[#e6e0d3] pb-12">
+        <div className="mx-auto w-24 h-24 bg-[#0a192f] rounded-none flex items-center justify-center mb-8 border border-[#c62828] shadow-[4px_4px_0_0_#d4af37] rotate-45 transition-transform duration-700 hover:rotate-90">
+          <div className="-rotate-45 transition-transform duration-700 hover:-rotate-90">
+            <Compass className="w-12 h-12 text-[#fdfbf7]" />
+          </div>
         </div>
-        <h1 className="text-4xl font-bold text-slate-900 tracking-tight">The Davy Back Match</h1>
+        <p className="text-[10px] font-bold text-[#c62828] uppercase tracking-[0.4em] mb-4">
+          Algorithmic Assembly
+        </p>
+        <h1 className="text-6xl font-bold text-[#0a192f] font-serif tracking-tight mb-6">The Davy Back</h1>
         {viewState === 'CONFIGURATION' && (
-          <p className="text-slate-500 mt-3 text-lg max-w-xl mx-auto">
-            Prepare for the ultimate crew formation. Select a mission, and our smart engine will analyze skills, balance roles, and assemble the perfect fleets.
+          <p className="text-[#0a192f]/60 mt-4 text-xl max-w-2xl mx-auto leading-relaxed">
+            Initiate the deterministic compatibility engine to assemble optimal fleets for active missions.
           </p>
         )}
       </div>
 
       {viewState === 'CONFIGURATION' && (
-        <Card className="border-slate-200 shadow-sm bg-white overflow-hidden max-w-3xl mx-auto animate-in fade-in zoom-in-95 duration-300">
-          <div className="h-1.5 bg-gradient-to-r from-primary via-accent to-primary" />
-          <CardHeader className="pb-4">
-            <CardTitle>Formation Protocol</CardTitle>
-            <CardDescription>Configure your generation parameters.</CardDescription>
+        <Card className="border border-[#e6e0d3] shadow-lg bg-white overflow-hidden max-w-3xl mx-auto animate-in fade-in zoom-in-95 duration-300 rounded-none relative">
+          <div className="absolute top-0 left-0 w-full h-1 bg-[#c62828]" />
+          <div className="absolute top-1 left-0 w-full h-px bg-[#d4af37]" />
+          <CardHeader className="pb-6 pt-10 px-10 border-b border-[#e6e0d3] bg-[#fdfbf7]">
+            <CardTitle className="font-serif text-2xl text-[#0a192f]">Formation Protocol</CardTitle>
+            <CardDescription className="text-[#0a192f]/60 text-sm tracking-widest uppercase font-bold mt-2">Configure operational parameters.</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-8">
-            <div className="bg-slate-50 border border-slate-100 rounded-lg p-5 flex items-start gap-4">
-              <Users className="w-6 h-6 text-primary shrink-0 mt-0.5" />
+          <CardContent className="space-y-10 p-10">
+            <div className="bg-[#fdfbf7] border border-[#e6e0d3] p-6 flex items-start gap-5">
+              <Users className="w-6 h-6 text-[#c62828] shrink-0 mt-1" />
               <div>
-                <h3 className="font-semibold text-slate-800">Available Candidates</h3>
-                <p className="text-slate-600 text-sm mt-1">There are currently <strong className="text-slate-900">{participantsCount}</strong> unassigned candidates ready to join a crew.</p>
+                <h3 className="font-bold text-[#0a192f] tracking-wide uppercase text-sm">Available Candidates</h3>
+                <p className="text-[#0a192f]/70 text-sm mt-2 leading-relaxed">There are currently <strong className="text-[#c62828] text-lg mx-1">{participantsCount}</strong> unassigned candidates awaiting formation.</p>
                 {participantsCount === 0 && (
-                  <p className="text-sm text-destructive mt-2 flex items-center gap-1.5">
-                    <AlertCircle className="w-4 h-4" /> You need to add participants before forming crews.
+                  <p className="text-sm text-[#b33939] mt-3 flex items-center gap-2 font-bold bg-[#b33939]/10 p-2 border border-[#b33939]/20">
+                    <AlertCircle className="w-4 h-4" /> Insufficient candidates. Register participants first.
                   </p>
                 )}
               </div>
             </div>
 
-            <div className="space-y-3">
-              <label className="text-sm font-semibold text-slate-700 block">Target Mission</label>
+            <div className="space-y-4">
+              <label className="text-xs font-bold text-[#0a192f] uppercase tracking-[0.2em] block">Target Mission</label>
               <Select value={selectedChallenge} onValueChange={(v) => setSelectedChallenge(v || '')} disabled={challenges.length === 0}>
-                <SelectTrigger className="w-full h-12 text-base">
-                  <SelectValue placeholder={challenges.length === 0 ? "No missions available" : "Select a mission for the fleet..."} />
+                <SelectTrigger className="w-full h-14 text-base rounded-none border-[#e6e0d3] bg-[#fdfbf7] focus:ring-[#c62828] focus:border-[#c62828]">
+                  <SelectValue placeholder={challenges.length === 0 ? "No missions available" : "Select a mission to match crews against..."} />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="rounded-none border-[#e6e0d3]">
                   {challenges.map(c => (
-                    <SelectItem key={c.id} value={c.id}>{c.title} (Crew size: {c.teamSize})</SelectItem>
+                    <SelectItem key={c.id} value={c.id} className="cursor-pointer">
+                      <span className="font-bold text-[#0a192f]">{c.title}</span> <span className="text-[#0a192f]/50 ml-2 text-xs">SIZE: {c.teamSize}</span>
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
               {challenges.length === 0 && (
-                <p className="text-sm text-slate-500 flex items-center gap-1.5 mt-2">
-                  <AlertCircle className="w-4 h-4" /> Go to the Challenges page to create one first.
+                <p className="text-sm text-[#0a192f]/60 flex items-center gap-2 mt-3 font-medium italic">
+                  <AlertCircle className="w-4 h-4 text-[#d4af37]" /> A mission must be charted before matching can begin.
                 </p>
               )}
             </div>
 
-            <div className="pt-4 border-t border-slate-100">
+            <div className="pt-8 border-t border-[#e6e0d3]">
               <Button 
                 size="lg" 
-                className="w-full h-14 text-lg font-semibold bg-primary hover:bg-primary/90 text-white shadow-md transition-transform active:scale-[0.98]"
+                className="w-full h-16 text-lg font-bold bg-[#c62828] hover:bg-[#a01f1f] text-white shadow-md transition-all active:scale-[0.98] rounded-none uppercase tracking-[0.2em] group"
                 onClick={handleGenerateClick}
                 disabled={participantsCount === 0 || challenges.length === 0 || !selectedChallenge}
               >
-                <Anchor className="w-5 h-5 mr-2" /> Start Crew Generation
+                <Anchor className="w-5 h-5 mr-3 text-white/50 group-hover:text-white transition-colors" /> Initiate Assembly Sequence
               </Button>
             </div>
           </CardContent>
@@ -180,31 +188,34 @@ export default function DavyBackPage() {
       )}
 
       {viewState === 'RESULTS' && (
-        <div className="space-y-8 animate-in fade-in duration-500">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
-            <p className="text-slate-700 font-medium text-center sm:text-left">
-              Successfully assembled <strong className="text-slate-900">{generatedTeams.length}</strong> optimal crew(s).
-            </p>
-            <div className="flex gap-3 w-full sm:w-auto">
-              <Button variant="outline" onClick={resetToConfig} className="flex-1 sm:flex-none bg-white text-slate-600 border-slate-300">
-                <RotateCcw className="w-4 h-4 mr-2" /> Match Again
+        <div className="space-y-12 animate-in fade-in duration-500">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-6 bg-white p-6 border-2 border-[#e6e0d3] shadow-sm relative overflow-hidden">
+            <div className="absolute left-0 top-0 bottom-0 w-2 bg-[#c62828]" />
+            <div className="pl-4">
+              <p className="text-[#0a192f] font-serif text-xl text-center sm:text-left">
+                Successfully assembled <strong className="text-[#c62828] text-2xl mx-1">{generatedTeams.length}</strong> optimal fleet(s).
+              </p>
+            </div>
+            <div className="flex gap-4 w-full sm:w-auto">
+              <Button variant="outline" onClick={resetToConfig} className="flex-1 sm:flex-none bg-[#fdfbf7] text-[#0a192f] border-[#0a192f]/20 hover:bg-[#0a192f]/5 rounded-none font-bold uppercase tracking-widest text-[10px] h-12 px-6">
+                <RotateCcw className="w-3 h-3 mr-2" /> Rematch
               </Button>
-              <Button render={<Link href="/fleets" />} className="flex-1 sm:flex-none bg-accent hover:bg-accent/90">
-                View All Fleets <ArrowRight className="w-4 h-4 ml-2" />
+              <Button render={<Link href="/fleets" />} className="flex-1 sm:flex-none bg-[#0a192f] hover:bg-[#0a192f]/90 text-white rounded-none font-bold uppercase tracking-widest text-[10px] h-12 px-6">
+                View Ledger <ArrowRight className="w-3 h-3 ml-2 text-[#d4af37]" />
               </Button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {generatedTeams.length > 0 ? (
               generatedTeams.map((team, index) => (
                 <CrewResultCard key={team.id} team={team} delay={index * 0.15} />
               ))
             ) : (
-              <div className="col-span-full text-center py-12 bg-white rounded-xl border border-slate-200 shadow-sm">
-                <AlertCircle className="w-8 h-8 text-slate-400 mx-auto mb-3" />
-                <h3 className="text-lg font-medium text-slate-900">No complete crews formed</h3>
-                <p className="text-slate-500 max-w-md mx-auto">There were not enough matching candidates available to form a full crew for this mission.</p>
+              <div className="col-span-full text-center py-20 bg-white border border-[#e6e0d3] shadow-sm flex flex-col items-center justify-center">
+                <AlertCircle className="w-12 h-12 text-[#0a192f]/20 mb-4" />
+                <h3 className="text-2xl font-serif font-bold text-[#0a192f] mb-2">Formation Failed</h3>
+                <p className="text-[#0a192f]/60 max-w-md mx-auto text-lg">Insufficient compatible candidates to fulfill the mission requirements.</p>
               </div>
             )}
           </div>

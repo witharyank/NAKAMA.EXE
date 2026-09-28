@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Plus_Jakarta_Sans, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { Navigation } from "@/components/layout/navigation";
 import { Toaster } from "@/components/ui/sonner";
 
-const inter = Inter({ subsets: ["latin"] });
+const sans = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-sans" });
+const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" });
 
 export const metadata: Metadata = {
   title: "NAKAMA.EXE",
@@ -18,10 +19,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <div className="min-h-screen flex flex-col">
+      <body className={`${sans.variable} ${playfair.variable} font-sans`}>
+        <div className="min-h-screen flex flex-col selection:bg-primary/20 selection:text-primary">
           <Navigation />
-          <main className="flex-1 flex flex-col bg-slate-50/50">
+          <main className="flex-1 flex flex-col">
             {children}
           </main>
         </div>
