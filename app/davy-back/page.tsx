@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { Compass, Anchor, AlertCircle, Users, RotateCcw, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -11,7 +12,8 @@ import Link from 'next/link';
 
 type ViewState = 'CONFIGURATION' | 'GENERATING' | 'RESULTS';
 
-export default function DavyBackPage() {
+function DavyBackInner() {
+  const searchParams = useSearchParams();
   const [viewState, setViewState] = useState<ViewState>('CONFIGURATION');
   const [challenges, setChallenges] = useState<any[]>([]);
   const [participantsCount, setParticipantsCount] = useState(0);
@@ -33,7 +35,15 @@ export default function DavyBackPage() {
       const cJson = await cRes.json();
       const pJson = await pRes.json();
       
-      if (cJson.success) setChallenges(cJson.data);
+      if (cJson.success) {
+        setChallenges(cJson.data);
+        // Pre-select challenge if navigated from mission dossier
+        const missionParam = searchParams?.get('mission');
+        if (missionParam) {
+          const exists = cJson.data.find((c: any) => c.id === missionParam);
+          if (exists) setSelectedChallenge(missionParam);
+        }
+      }
       if (pJson.success) {
         const unassigned = pJson.data.filter((p: any) => !p.teamId);
         setParticipantsCount(unassigned.length);
@@ -222,5 +232,20 @@ export default function DavyBackPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function DavyBackPage() {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto px-4 py-16 max-w-4xl text-center">
+        <div className="animate-pulse space-y-4">
+          <div className="w-24 h-24 bg-slate-200 rounded-full mx-auto" />
+          <div className="w-64 h-8 bg-slate-200 rounded mx-auto" />
+        </div>
+      </div>
+    }>
+      <DavyBackInner />
+    </Suspense>
   );
 }

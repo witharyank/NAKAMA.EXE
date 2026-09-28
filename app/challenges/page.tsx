@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { ChallengeCard } from '@/components/challenges/challenge-card';
+import { ChallengeDossier } from '@/components/challenges/challenge-dossier';
 import { ChallengeForm } from '@/components/challenges/challenge-form';
 import { toast } from 'sonner';
 import { Map } from 'lucide-react';
@@ -8,6 +9,7 @@ import { Map } from 'lucide-react';
 export default function ChallengesPage() {
   const [challenges, setChallenges] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedChallenge, setSelectedChallenge] = useState<any | null>(null);
 
   const loadChallenges = async () => {
     try {
@@ -93,10 +95,19 @@ export default function ChallengesPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {challenges.map(c => (
-            <ChallengeCard key={c.id} challenge={c} />
+            <ChallengeCard
+              key={c.id}
+              challenge={c}
+              onClick={() => setSelectedChallenge(c)}
+            />
           ))}
         </div>
       )}
+
+      <ChallengeDossier
+        challenge={selectedChallenge}
+        onClose={() => setSelectedChallenge(null)}
+      />
     </div>
   );
 }

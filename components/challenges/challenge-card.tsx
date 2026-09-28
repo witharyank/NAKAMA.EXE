@@ -1,10 +1,21 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { ChallengeData } from "@/lib/matching";
-import { Users, MapPin, Target, Ship } from "lucide-react";
+import { Users, Target, Ship } from "lucide-react";
 
-export function ChallengeCard({ challenge }: { challenge: ChallengeData & { title: string, description: string, difficulty: string } }) {
+interface ChallengeCardProps {
+  challenge: ChallengeData & { title: string; description: string; difficulty: string };
+  onClick?: () => void;
+}
+
+export function ChallengeCard({ challenge, onClick }: ChallengeCardProps) {
   return (
-    <Card className="group relative hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 bg-[#fdfbf7] border border-[#e6e0d3] h-full flex flex-col overflow-hidden rounded-none">
+    <Card
+      onClick={onClick}
+      tabIndex={onClick ? 0 : undefined}
+      role={onClick ? "button" : undefined}
+      onKeyDown={onClick ? (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); } } : undefined}
+      className={`group relative hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 bg-[#fdfbf7] border border-[#e6e0d3] h-full flex flex-col overflow-hidden rounded-none${onClick ? " cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#da2528] focus-visible:ring-offset-2" : ""}`}
+    >
       {/* Decorative top border */}
       <div className="absolute top-0 left-0 w-full h-2 bg-[#0a192f] group-hover:bg-[#d4af37] transition-colors" />
       <div className="absolute top-2 left-0 w-full h-px bg-[#c62828]" />
@@ -56,6 +67,15 @@ export function ChallengeCard({ challenge }: { challenge: ChallengeData & { titl
             </div>
           </div>
         </div>
+
+        {/* Hover overlay hint */}
+        {onClick && (
+          <div className="absolute inset-0 bg-[#0a192f]/70 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+            <p className="text-white font-black text-[10px] uppercase tracking-[0.3em] border border-white/40 px-5 py-2">
+              OPEN MISSION BRIEF
+            </p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
