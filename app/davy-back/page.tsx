@@ -198,31 +198,41 @@ function DavyBackInner() {
       )}
 
       {viewState === 'RESULTS' && (
-        <div className="space-y-12 animate-in fade-in duration-500">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-6 bg-white p-6 border-2 border-[#e6e0d3] shadow-sm relative overflow-hidden">
-            <div className="absolute left-0 top-0 bottom-0 w-2 bg-[#c62828]" />
-            <div className="pl-4">
-              <p className="text-[#0a192f] font-serif text-xl text-center sm:text-left">
-                Successfully assembled <strong className="text-[#c62828] text-2xl mx-1">{generatedTeams.length}</strong> optimal fleet(s).
-              </p>
-            </div>
-            <div className="flex gap-4 w-full sm:w-auto">
-              <Button variant="outline" onClick={resetToConfig} className="flex-1 sm:flex-none bg-[#fdfbf7] text-[#0a192f] border-[#0a192f]/20 hover:bg-[#0a192f]/5 rounded-none font-bold uppercase tracking-widest text-[10px] h-12 px-6">
-                <RotateCcw className="w-3 h-3 mr-2" /> Rematch
-              </Button>
-              <Button render={<Link href="/fleets" />} className="flex-1 sm:flex-none bg-[#0a192f] hover:bg-[#0a192f]/90 text-white rounded-none font-bold uppercase tracking-widest text-[10px] h-12 px-6">
-                View Ledger <ArrowRight className="w-3 h-3 ml-2 text-[#d4af37]" />
-              </Button>
-            </div>
+        <div className="w-full flex flex-col items-center animate-in fade-in duration-500">
+          
+          <div className="bg-white/60 px-4 py-1.5 rounded-full border border-white/40 mb-6 flex items-center gap-2">
+            <Anchor className="w-3 h-3 text-[#0a192f]" />
+            <span className="text-[9px] font-bold uppercase tracking-widest text-[#0a192f]">AUTO-MATCH // TARGET MATCHING ENGINE</span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <h2 className="text-4xl md:text-5xl font-serif font-black text-[#0a192f] tracking-tight mb-2 text-center">
+            ASSEMBLE YOUR NAKAMA
+          </h2>
+          <p className="text-[#d4af37] text-lg font-serif italic mb-12 text-center">
+            "Every captain needs the right crew."
+          </p>
+
+          <div className="flex flex-col sm:flex-row justify-between items-center w-full max-w-[1200px] mb-8 gap-4 px-4">
+             <p className="text-[#0a192f] font-serif text-xl">
+               Successfully assembled <strong className="text-[#c62828] text-2xl mx-1">{generatedTeams.length}</strong> optimal fleet(s).
+             </p>
+             <div className="flex gap-4">
+               <Button variant="outline" onClick={resetToConfig} className="bg-white text-[#0a192f] border-[#0a192f]/20 hover:bg-[#0a192f]/5 rounded-xl font-bold uppercase tracking-widest text-[10px] h-12 px-6">
+                 <RotateCcw className="w-3 h-3 mr-2" /> Rematch
+               </Button>
+               <Button render={<Link href="/fleets" />} className="bg-[#0a192f] hover:bg-[#0a192f]/90 text-white rounded-xl font-bold uppercase tracking-widest text-[10px] h-12 px-6">
+                 View Ledger <ArrowRight className="w-3 h-3 ml-2 text-[#d4af37]" />
+               </Button>
+             </div>
+          </div>
+
+          <div className="w-full flex flex-col items-center gap-16">
             {generatedTeams.length > 0 ? (
               generatedTeams.map((team, index) => (
                 <CrewResultCard key={team.id} team={team} delay={index * 0.15} />
               ))
             ) : (
-              <div className="col-span-full text-center py-20 bg-white border border-[#e6e0d3] shadow-sm flex flex-col items-center justify-center">
+              <div className="w-full max-w-[800px] text-center py-20 bg-white border border-[#e6e0d3] rounded-[32px] shadow-lg flex flex-col items-center justify-center">
                 <AlertCircle className="w-12 h-12 text-[#0a192f]/20 mb-4" />
                 <h3 className="text-2xl font-serif font-bold text-[#0a192f] mb-2">Formation Failed</h3>
                 <p className="text-[#0a192f]/60 max-w-md mx-auto text-lg">Insufficient compatible candidates to fulfill the mission requirements.</p>
@@ -240,8 +250,8 @@ export default function DavyBackPage() {
     <Suspense fallback={
       <div className="container mx-auto px-4 py-16 max-w-4xl text-center">
         <div className="animate-pulse space-y-4">
-          <div className="w-24 h-24 bg-slate-200 rounded-full mx-auto" />
-          <div className="w-64 h-8 bg-slate-200 rounded mx-auto" />
+          <div className="w-24 h-24 bg-[#0a192f]/10 rounded-full mx-auto" />
+          <div className="w-64 h-8 bg-[#0a192f]/10 rounded mx-auto" />
         </div>
       </div>
     }>

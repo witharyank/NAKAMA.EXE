@@ -63,11 +63,14 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground antialiased font-sans;
+    @apply text-foreground antialiased font-sans min-h-screen;
+    background-color: #bbf0f3;
     background-image: 
-      linear-gradient(to right, rgba(13, 95, 102, 0.04) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(13, 95, 102, 0.04) 1px, transparent 1px);
-    background-size: 32px 32px;
+      radial-gradient(circle at 15% 50%, rgba(255, 255, 255, 0.4) 0%, transparent 50%),
+      radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
+      radial-gradient(circle at 50% 80%, rgba(255, 255, 255, 0.4) 0%, transparent 50%),
+      radial-gradient(circle at 50% 0%, rgba(134, 233, 238, 0.8) 0%, rgba(93, 216, 222, 0.8) 100%);
+    background-attachment: fixed;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-serif tracking-tight text-foreground;

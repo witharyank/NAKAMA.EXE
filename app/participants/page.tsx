@@ -1,10 +1,10 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { ParticipantCard } from '@/components/participants/participant-card';
+import { ParticipantGridCard } from '@/components/participants/participant-grid-card';
 import { ParticipantDossier } from '@/components/participants/participant-dossier';
-import { ParticipantForm } from '@/components/participants/participant-form';
 import { toast } from 'sonner';
-import { Users, Compass, Anchor, Ship } from 'lucide-react';
+import { Anchor, Search, Filter, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function ParticipantsPage() {
@@ -32,141 +32,118 @@ export default function ParticipantsPage() {
     loadParticipants();
   }, []);
 
+  const featured = participants.slice(0, 3);
+  const others = participants.slice(3);
+
   return (
-    <div className="container mx-auto px-6 py-12 max-w-[1400px]">
-      {/* Hero Section */}
-      <div className="flex flex-col lg:flex-row gap-12 mb-16 items-center">
-        {/* Left Side: Editorial Typography & Actions */}
-        <div className="flex-1 space-y-6">
-          <div className="flex items-center gap-2 text-[10px] font-bold text-[#0a192f]/60 uppercase tracking-[0.2em]">
-            <div className="w-3 h-3 rounded-full bg-[#da2528] flex items-center justify-center">
-              <div className="w-1 h-1 rounded-full bg-white" />
-            </div>
-            <span>BOUNTY REGISTRATION 1524 // PIRATE RECRUITMENT PROTOCOL</span>
-          </div>
-          
-          <h1 className="text-6xl lg:text-7xl font-black text-[#0a192f] font-serif tracking-tight leading-none uppercase">
-            THE WANTED <span className="text-[#da2528]">ROSTER</span>
-          </h1>
-          
-          <div className="flex gap-4 items-start pl-2">
-            <div className="w-1 h-12 bg-[#d4af37] shrink-0 mt-1" />
-            <p className="text-2xl text-[#d4af37] font-serif italic">
-              "Recruit the right nakama. Build the perfect crew. Set sail."
-            </p>
-          </div>
-          
-          <p className="text-[#0a192f]/70 text-lg max-w-2xl leading-relaxed pb-4">
-            Tactical dossiers of elite maritime engineers and architects available for crew integration. Real-time capability mapping across the Grand Line Hackathon Fleet.
-          </p>
-          
-          <div className="flex gap-4 pb-8">
-            <Button className="bg-[#da2528] hover:bg-[#b71c1c] text-white rounded font-bold tracking-widest uppercase text-xs px-8 h-12 shadow-[0_4px_14px_0_rgba(218,37,40,0.39)]">
-              <Compass className="w-4 h-4 mr-2" /> INSPECT THE ROSTER
-            </Button>
-            <Button className="bg-[#e0f2f1] hover:bg-[#cbeae8] text-[#0d5f66] rounded font-bold tracking-widest uppercase text-xs px-8 h-12">
-              <Anchor className="w-4 h-4 mr-2" /> JOIN THE CREW
-            </Button>
-          </div>
-          
-          <div className="grid grid-cols-3 gap-8 p-6 bg-[#f5e6c8]/30 rounded-xl border border-[#e6e0d3]">
-            <div>
-              <p className="text-[10px] font-bold text-[#0a192f]/60 uppercase tracking-[0.1em] mb-1">ACTIVE BOUNTIES</p>
-              <p className="text-2xl font-serif font-black text-[#da2528]">B 2,450,000,000</p>
-            </div>
-            <div>
-              <p className="text-[10px] font-bold text-[#0a192f]/60 uppercase tracking-[0.1em] mb-1">ASSEMBLED FLEETS</p>
-              <p className="text-2xl font-serif font-black text-[#0d5f66]">142 Crews</p>
-            </div>
-            <div>
-              <p className="text-[10px] font-bold text-[#0a192f]/60 uppercase tracking-[0.1em] mb-1">CURRENT TARGET</p>
-              <p className="text-2xl font-serif font-black text-[#d4af37]">All-Blue Grand ...</p>
-            </div>
-          </div>
+    <div className="min-h-screen flex flex-col items-center pt-12 pb-24 px-6 relative">
+      
+      {/* ── TOP SECTION: WANTED BOARD (Screenshot 2) ── */}
+      <div className="w-full max-w-[1200px] flex flex-col items-center mb-16">
+        <div className="bg-white/60 px-4 py-1.5 rounded-full border border-white/40 mb-6 flex items-center gap-2">
+          <Anchor className="w-3 h-3 text-[#0a192f]" />
+          <span className="text-[9px] font-bold uppercase tracking-widest text-[#0a192f]">NAKAMA ARCHIVES // GRAND LINE</span>
         </div>
         
-        {/* Right Side: Image Framing */}
-        <div className="lg:w-[500px] xl:w-[600px] shrink-0 relative group">
-          <div className="bg-[#e0f2f1] rounded-2xl p-4 shadow-xl border-2 border-white transform transition-transform group-hover:scale-[1.01] duration-500">
-            {/* Window controls styling */}
-            <div className="flex justify-between items-center mb-3 px-2">
-              <span className="text-[9px] font-mono text-[#0d5f66] opacity-70">logPose.sh</span>
-              <div className="flex items-center gap-4 text-[9px] font-mono text-[#0d5f66] bg-white/50 px-3 py-1 rounded-full">
-                <span>Captain Profile: Captain Kai</span>
-                <span className="bg-[#0a192f] text-white px-2 py-0.5 rounded">Rank: Grand Line Voyager</span>
-                <span className="text-[#0a192f]/40">Status: Read (Local Terminal)</span>
-              </div>
-              <div className="flex gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-[#da2528]/80" />
-                <div className="w-2.5 h-2.5 rounded-full bg-[#d4af37]/80" />
-                <div className="w-2.5 h-2.5 rounded-full bg-[#0d5f66]/80" />
-              </div>
-            </div>
-            {/* The Image */}
-            <div className="relative aspect-[4/3] rounded-xl overflow-hidden border-4 border-[#0a192f] bg-[#0a192f]">
-              <img src="/images/luffy.png" alt="Featured Pirate" className="w-full h-full object-cover object-top opacity-90" />
-            </div>
-          </div>
+        <h1 className="text-4xl md:text-5xl font-serif font-black text-[#0a192f] mb-4 text-center tracking-tight">
+          AVAILABLE CREW MEMBERS
+        </h1>
+        <p className="text-[#0a192f]/70 text-sm md:text-base text-center max-w-2xl mb-12">
+          Review verified skills, combat-ready operational roles, and crew compatibility before dispatching your recruitment invitation.
+        </p>
+
+        {/* Wooden Board Container */}
+        <div className="w-full bg-[#6a422d] rounded-3xl p-8 md:p-12 shadow-[inset_0_0_60px_rgba(0,0,0,0.5),0_20px_40px_rgba(0,0,0,0.3)] relative border-4 border-[#523120]">
           
-          {/* Floating Label */}
-          <div className="absolute -bottom-6 -left-6 bg-white border border-[#e6e0d3] shadow-lg rounded p-4 flex gap-4 max-w-[300px]">
-            <div className="bg-[#da2528] w-12 h-12 rounded flex items-center justify-center shrink-0">
-              <Ship className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <p className="text-[8px] font-bold text-[#0a192f]/50 uppercase tracking-widest mb-1">LOG POSE ENGINE</p>
-              <h4 className="text-[#0a192f] font-black tracking-tight leading-none mb-1">GRAND LINE READY</h4>
-              <p className="text-[9px] font-mono text-[#0a192f]/40 uppercase truncate">SYNCHRONIZED // 89.4% VECTOR</p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+            {loading ? (
+               [1, 2, 3].map(i => <div key={i} className="h-[400px] bg-[#f5e6c8]/10 animate-pulse rounded" />)
+            ) : featured.map((p, i) => (
+              <div key={p.id} className={`transform ${i === 0 ? '-rotate-2' : i === 1 ? 'scale-105 z-10' : 'rotate-2'} transition-transform hover:rotate-0 hover:scale-105 duration-300 relative`}>
+                 {/* Pin */}
+                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-[#d4af37] border border-[#a67c00] shadow-md z-20" style={{ boxShadow: '0 4px 6px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,255,0.5)' }} />
+                 {/* Top Tactical Priority badge for center */}
+                 {i === 1 && (
+                   <div className="absolute -top-3 -left-4 bg-[#da2528] text-white text-[8px] font-black tracking-widest px-3 py-1 uppercase border border-[#b71c1c] shadow-md z-20">
+                     TOP TACTICAL PRIORITY
+                   </div>
+                 )}
+                 <ParticipantCard 
+                   participant={p} 
+                   onClick={() => setSelectedParticipant(p)}
+                   isFeatured={true}
+                 />
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
-      <div className="pt-16 border-t border-[#e6e0d3] mb-8">
-        <div className="flex items-center gap-2 text-[10px] font-bold text-[#0a192f]/60 uppercase tracking-[0.2em] mb-3">
-          <Compass className="w-4 h-4 text-[#d4af37]" />
-          <span>NAKAMA ARCHIVES // GRAND LINE RECRUITMENT</span>
-        </div>
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div>
-            <h2 className="text-4xl font-black text-[#0a192f] font-serif uppercase tracking-tight mb-2">AVAILABLE CREW MEMBERS</h2>
-            <p className="text-[#0a192f]/60 text-lg font-serif italic">"Review skills, roles and compatibility before assembling your crew."</p>
-          </div>
-          <div className="flex gap-2">
-            <span className="bg-[#0d5f66] text-white px-4 py-2 rounded text-[10px] font-bold tracking-widest uppercase shadow-sm">ALL BOUNTIES</span>
-            <span className="bg-[#e0f2f1] text-[#0d5f66] px-4 py-2 rounded text-[10px] font-bold tracking-widest uppercase shadow-sm">NAVIGATORS</span>
-            <span className="bg-[#e0f2f1] text-[#0d5f66] px-4 py-2 rounded text-[10px] font-bold tracking-widest uppercase shadow-sm">SHIPWRIGHTS</span>
-            <span className="bg-[#e0f2f1] text-[#0d5f66] px-4 py-2 rounded text-[10px] font-bold tracking-widest uppercase shadow-sm">ARCHITECTS</span>
-            <span className="bg-[#e0f2f1] text-[#0d5f66] px-4 py-2 rounded text-[10px] font-bold tracking-widest uppercase shadow-sm">DOCTORS / ML</span>
-          </div>
-        </div>
-      </div>
+      {/* ── BOTTOM SECTION: PARTICIPANT DISCOVERY (Screenshot 3) ── */}
+      <div className="w-full max-w-[1400px] bg-[#fdfbf7] rounded-3xl shadow-xl border border-white p-8 md:p-12">
+         
+         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-6">
+           <div>
+             <div className="bg-[#fce8e8] text-[#da2528] border border-[#da2528]/20 px-3 py-1 rounded-full text-[8px] font-bold uppercase tracking-widest inline-flex items-center gap-1.5 mb-4">
+               <div className="w-1.5 h-1.5 bg-[#da2528] rounded-full" /> RECRUITMENT DIRECTORY // GRAND LINE FLEET CARDS
+             </div>
+             <h2 className="text-4xl md:text-5xl font-serif font-black text-[#0a192f] tracking-tight flex items-center gap-3">
+               FIND YOUR NAKAMA
+               <div className="w-8 h-8 rounded-full bg-[#d4af37] text-white flex items-center justify-center text-sm shadow-inner">
+                 <Search className="w-4 h-4" />
+               </div>
+             </h2>
+             <p className="text-[#0a192f]/70 text-sm mt-3 max-w-xl">
+               Discover crewmates by skills, interests and preferred crew roles. Calibrate your Log Pose and assemble an invincible armada before crossing the calm belt.
+             </p>
+           </div>
+           
+           <Button className="bg-[#da2528] hover:bg-[#b71c1c] text-white rounded-full font-bold tracking-widest uppercase text-[10px] px-6 h-12 shadow-[0_4px_14px_0_rgba(218,37,40,0.39)] shrink-0 transition-transform hover:-translate-y-0.5">
+             <Plus className="w-4 h-4 mr-2" /> ADD PARTICIPANT
+           </Button>
+         </div>
 
-      {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {[1,2,3,4,5,6,7,8].map(i => <div key={i} className="h-64 bg-[#e6e0d3]/30 animate-pulse rounded-none" />)}
-        </div>
-      ) : participants.length === 0 ? (
-        <div className="text-center py-32 bg-white rounded-none border border-[#e6e0d3] shadow-sm relative overflow-hidden flex flex-col items-center">
-          <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'radial-gradient(circle at center, #0a192f 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
-          <div className="w-20 h-20 bg-[#fdfbf7] text-[#0a192f] rounded-none border border-[#e6e0d3] flex items-center justify-center mb-6 relative z-10 shadow-sm rotate-3">
-            <Users className="w-8 h-8 text-[#c62828]" />
-          </div>
-          <h3 className="text-3xl font-serif font-bold text-[#0a192f] mb-3 relative z-10">The roster is empty.</h3>
-          <p className="text-[#0a192f]/60 mb-8 max-w-md mx-auto relative z-10 text-lg">No crew members have been registered. Begin assembling your fleet for the Davy Back match.</p>
-          <div className="relative z-10 shadow-lg"><ParticipantForm onCreated={loadParticipants} /></div>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {participants.map(p => (
-            <ParticipantCard
-              key={p.id}
-              participant={p}
-              onClick={() => setSelectedParticipant(p)}
-            />
-          ))}
-        </div>
-      )}
+         {/* Filter Bar */}
+         <div className="flex flex-col md:flex-row gap-4 mb-10 pb-6 border-b border-[#e6e0d3]">
+           <div className="flex-1 relative">
+             <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-[#0a192f]/40" />
+             <input 
+               type="text" 
+               placeholder="Search by name, skill, or interest..." 
+               className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#e6e0d3] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#0d5f66]/20"
+             />
+           </div>
+           <div className="flex gap-2">
+             <Button variant="outline" className="bg-white border-[#e6e0d3] text-[#0a192f] rounded-xl text-[10px] font-bold tracking-wider uppercase h-[46px]">ALL CREW ROLES</Button>
+             <Button variant="outline" className="bg-white border-[#e6e0d3] text-[#0a192f] rounded-xl text-[10px] font-bold tracking-wider uppercase h-[46px]">ALL TECHNICAL SKILLS</Button>
+             <Button variant="outline" className="bg-white border-[#e6e0d3] text-[#0a192f] rounded-xl text-[10px] font-bold tracking-wider uppercase h-[46px]">ALL INTEREST DOMAINS</Button>
+             <Button variant="outline" className="bg-[#e0f2f1] border-[#0d5f66]/20 text-[#0d5f66] rounded-xl text-[10px] font-bold tracking-wider uppercase h-[46px]">
+               <Filter className="w-3 h-3 mr-2" /> NAKAMA AVAILABLE // MATCH: ON
+             </Button>
+           </div>
+         </div>
+
+         {/* Grid */}
+         {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1,2,3,4,5,6].map(i => <div key={i} className="h-80 bg-gray-100 animate-pulse rounded-2xl" />)}
+            </div>
+         ) : others.length === 0 ? (
+           <div className="text-center py-20">
+             <p className="text-[#0a192f]/50">No additional candidates found.</p>
+           </div>
+         ) : (
+           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+             {others.map(p => (
+               <ParticipantGridCard 
+                 key={p.id} 
+                 participant={p} 
+                 onClick={() => setSelectedParticipant(p)} 
+               />
+             ))}
+           </div>
+         )}
+      </div>
 
       <ParticipantDossier
         participant={selectedParticipant}

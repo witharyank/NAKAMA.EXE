@@ -1,16 +1,12 @@
 "use client";
-import { useRef, useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Users, Crosshair, Star, ChevronDown, ChevronUp, Anchor } from "lucide-react";
+import { useRef } from "react";
+import { Users, Crosshair, Star, ArrowRight, Layers } from "lucide-react";
+import Link from "next/link";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
 export function CrewResultCard({ team, delay = 0 }: { team: any, delay?: number }) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const scoreRef = useRef<HTMLSpanElement>(null);
-  const ringRef = useRef<SVGCircleElement>(null);
-  const [expanded, setExpanded] = useState(false);
 
   const safeParse = (str: string | null | undefined): string[] => {
     if (!str) return [];
@@ -24,171 +20,118 @@ export function CrewResultCard({ team, delay = 0 }: { team: any, delay?: number 
 
   const skillCoverage = safeParse(team.skillCoverage);
   const roleCoverage = safeParse(team.roleCoverage);
+  const members = team.members || [];
+  
+  // Fake stats based on team data to match UI metrics
+  const roleMatch = roleCoverage.length >= 4 ? 100 : Math.round((roleCoverage.length / 5) * 100);
+  const skillSyn = Math.min(100, 70 + skillCoverage.length * 5);
+  const challengeMatch = Math.round(team.compatibilityScore || 0);
+  const clinicalPace = Math.min(100, 60 + members.length * 8);
 
   useGSAP(() => {
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    
-    // Card Entrance
     gsap.fromTo(cardRef.current, 
-      { opacity: 0, y: prefersReducedMotion ? 0 : 30 },
+      { opacity: 0, y: 30 },
       { opacity: 1, y: 0, duration: 0.8, delay, ease: "power3.out" }
     );
-
-    const targetScore = Math.round(team.compatibilityScore || 0);
-    const scoreObj = { val: 0 };
-    
-    if (prefersReducedMotion) {
-      if (scoreRef.current) scoreRef.current.innerText = targetScore.toString();
-      if (ringRef.current) ringRef.current.style.strokeDashoffset = `${100 - targetScore}`;
-    } else {
-      // Score Count-up
-      gsap.to(scoreObj, {
-        val: targetScore,
-        duration: 1.5,
-        delay: delay + 0.3,
-        ease: "power2.out",
-        onUpdate: () => {
-          if (scoreRef.current) {
-            scoreRef.current.innerText = Math.round(scoreObj.val).toString();
-          }
-        }
-      });
-
-      // SVG Ring fill
-      gsap.fromTo(ringRef.current,
-        { strokeDashoffset: 100 },
-        { strokeDashoffset: 100 - targetScore, duration: 1.5, delay: delay + 0.3, ease: "power2.out" }
-      );
-    }
   }, { scope: cardRef });
 
   return (
-    <Card ref={cardRef} className="opacity-0 group relative bg-[#fdfbf7] border border-[#e6e0d3] h-full flex flex-col overflow-hidden rounded-none shadow-lg">
-      <div className="absolute top-0 left-0 w-full h-1 bg-[#c62828]" />
+    <div ref={cardRef} className="opacity-0 bg-[#fdfbf7] border border-white/60 rounded-[32px] p-10 shadow-2xl relative overflow-hidden flex flex-col items-center w-full max-w-[1200px] mx-auto mb-16">
       
-      <CardHeader className="pb-6 pt-6 border-b border-[#e6e0d3] bg-[#0a192f] text-white relative overflow-hidden px-6">
-        <div className="absolute -right-10 -top-10 opacity-10 pointer-events-none transition-transform duration-700 group-hover:rotate-12 group-hover:scale-110">
-          <CompassIcon className="w-48 h-48" />
+      {/* Top Header */}
+      <div className="w-full flex justify-between items-center mb-16">
+        <div className="flex bg-[#0a192f] rounded-full overflow-hidden text-[9px] font-bold uppercase tracking-widest text-white shadow-md">
+          <div className="px-4 py-2 bg-[#0a192f]">MODE:</div>
+          <div className="px-4 py-2 bg-[#0d5f66]">Balanced</div>
+          <div className="px-4 py-2 hover:bg-[#0a192f]/80 cursor-pointer transition-colors">Skill Focused</div>
+          <div className="px-4 py-2 hover:bg-[#0a192f]/80 cursor-pointer transition-colors">Role Focused</div>
         </div>
         
-        <div className="flex justify-between items-start gap-4 relative z-10">
-          <div className="space-y-1">
-            <div className="flex items-center gap-1.5 mb-2">
-              <Anchor className="w-3.5 h-3.5 text-[#d4af37]" />
-              <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-[#d4af37]">Assembled Fleet</span>
-            </div>
-            <CardTitle className="text-3xl font-black leading-none text-white font-serif tracking-tight">{team.name}</CardTitle>
-            {team.assignedChallenge && (
-              <p className="text-xs font-medium text-[#fdfbf7]/60 mt-3 font-serif italic max-w-[200px] truncate">
-                Target: <span className="text-[#fdfbf7] not-italic font-sans font-bold tracking-widest uppercase">{team.assignedChallenge.title}</span>
-              </p>
-            )}
-          </div>
-          
-          <div className="flex flex-col items-center justify-center shrink-0 relative w-16 h-16 bg-[#d4af37]/10 backdrop-blur-sm rounded-none border border-[#d4af37]/30 transform rotate-3">
-            <svg viewBox="0 0 36 36" className="w-16 h-16 absolute inset-0 -rotate-90">
-              <circle cx="18" cy="18" r="15.91549430918954" fill="transparent" stroke="rgba(212,175,55,0.1)" strokeWidth="3" />
-              <circle 
-                ref={ringRef}
-                cx="18" cy="18" r="15.91549430918954" 
-                fill="transparent" 
-                stroke="#d4af37" 
-                strokeWidth="3" 
-                strokeDasharray="100 100" 
-                strokeDashoffset="100" 
-                className="transition-all duration-200"
-              />
-            </svg>
-            <div className="flex flex-col items-center justify-center relative z-10">
-              <span ref={scoreRef} className="text-xl font-black text-[#d4af37] leading-none">0</span>
-            </div>
-          </div>
-        </div>
-      </CardHeader>
+        <Link href="/fleets" className="bg-[#da2528] hover:bg-[#b71c1c] text-white rounded-xl font-bold tracking-widest uppercase text-[10px] px-6 py-3 shadow-[0_4px_14px_0_rgba(218,37,40,0.39)] transition-transform hover:-translate-y-0.5 flex items-center gap-2">
+          <Layers className="w-4 h-4" /> ASSEMBLE THIS CREW <ArrowRight className="w-4 h-4" />
+        </Link>
+      </div>
       
-      <CardContent className="pt-6 px-6 pb-6 flex-1 space-y-6 relative z-10 bg-[#fdfbf7]">
-        <div>
-          <div className="flex justify-between items-center mb-4">
-            <h4 className="text-[9px] font-bold text-[#0a192f]/50 uppercase tracking-[0.25em] flex items-center gap-1.5">
-              <Users className="w-3 h-3 text-[#c62828]" /> Roster ({team.members?.length || 0})
-            </h4>
+      {/* Radar Visualization */}
+      <div className="relative w-[600px] h-[400px] flex items-center justify-center mb-12">
+        {/* Hexagon SVG */}
+        <svg viewBox="0 0 400 400" className="absolute inset-0 w-full h-full opacity-80">
+          {/* Outer Hexagon */}
+          <polygon points="200,50 330,125 330,275 200,350 70,275 70,125" fill="#e0f2f1" stroke="#0d5f66" strokeWidth="1" strokeDasharray="4 4" className="opacity-30" />
+          <polygon points="200,50 330,125 330,275 200,350 70,275 70,125" fill="none" stroke="#0d5f66" strokeWidth="1.5" />
+          
+          {/* Inner Hexagon */}
+          <polygon points="200,125 265,162 265,237 200,275 135,237 135,162" fill="none" stroke="#0d5f66" strokeWidth="1" strokeDasharray="2 2" className="opacity-40" />
+          
+          {/* Connecting Lines */}
+          <line x1="200" y1="200" x2="200" y2="50" stroke="#0d5f66" strokeWidth="1" strokeDasharray="2 2" className="opacity-40" />
+          <line x1="200" y1="200" x2="330" y2="125" stroke="#0d5f66" strokeWidth="1" strokeDasharray="2 2" className="opacity-40" />
+          <line x1="200" y1="200" x2="330" y2="275" stroke="#0d5f66" strokeWidth="1" strokeDasharray="2 2" className="opacity-40" />
+          <line x1="200" y1="200" x2="200" y2="350" stroke="#0d5f66" strokeWidth="1" strokeDasharray="2 2" className="opacity-40" />
+          <line x1="200" y1="200" x2="70" y2="275" stroke="#0d5f66" strokeWidth="1" strokeDasharray="2 2" className="opacity-40" />
+          <line x1="200" y1="200" x2="70" y2="125" stroke="#0d5f66" strokeWidth="1" strokeDasharray="2 2" className="opacity-40" />
+        </svg>
+        
+        {/* Central Node */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+          <div className="w-16 h-16 rounded-full bg-white border-4 border-[#e6e0d3] flex items-center justify-center shadow-lg relative z-10 before:absolute before:inset-[-8px] before:rounded-full before:border before:border-[#d4af37]/40">
+             <Star className="w-6 h-6 text-[#da2528]" />
           </div>
-          <div className="space-y-3">
-            {team.members?.map((member: any) => (
-              <div key={member.id} className="flex items-center gap-3 group/member p-2 border border-[#e6e0d3] hover:border-[#0a192f]/20 bg-white transition-colors">
-                <div className="w-10 h-10 rounded-full border border-[#0a192f]/20 overflow-hidden bg-[#e6e0d3] shrink-0">
-                  <img src={`https://api.dicebear.com/9.x/adventurer/svg?seed=${encodeURIComponent(member.name)}&backgroundColor=f5e6c8`} alt={member.name} className="w-full h-full object-cover" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-bold text-[#0a192f] text-sm font-serif truncate">{member.name}</p>
-                  <p className="text-[8px] font-bold uppercase tracking-[0.2em] text-[#0a192f]/60 truncate">{member.preferredRole}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <span className="mt-2 text-[9px] font-bold text-[#0a192f] uppercase tracking-widest bg-white/80 px-2 py-0.5 rounded backdrop-blur-sm shadow-sm border border-white/40">COMMAND TIER</span>
         </div>
         
-        <div className="pt-4 border-t border-[#e6e0d3]">
-          <button 
-            onClick={() => setExpanded(!expanded)}
-            className="flex items-center justify-between w-full text-[10px] font-bold text-[#0a192f] uppercase tracking-[0.25em] hover:text-[#c62828] transition-colors py-2 focus:outline-none"
-            aria-expanded={expanded}
-          >
-            Algorithmic Synergy
-            {expanded ? <ChevronUp className="w-4 h-4 text-[#c62828]" /> : <ChevronDown className="w-4 h-4 text-[#0a192f]/40" />}
-          </button>
+        {/* Dynamic Outer Nodes */}
+        {members.map((member: any, i: number) => {
+          // Positions for up to 5 members forming a pentagon-like layout or distributing on the hex
+          const positions = [
+            { top: '5%', left: '50%' },     // Top
+            { top: '30%', left: '80%' },    // Top Right
+            { top: '75%', left: '75%' },    // Bottom Right
+            { top: '90%', left: '50%' },    // Bottom
+            { top: '75%', left: '25%' },    // Bottom Left
+            { top: '30%', left: '20%' },    // Top Left
+          ];
+          const pos = positions[i % positions.length];
           
-          {expanded && (
-            <div className="mt-5 space-y-6 animate-in slide-in-from-top-2 fade-in duration-200 pb-2">
-              <div className="grid grid-cols-2 gap-5">
-                <div>
-                  <h4 className="text-[8px] font-bold text-[#0a192f]/50 uppercase tracking-[0.2em] mb-2 flex items-center gap-1.5">
-                    <Star className="w-3 h-3 text-[#d4af37]" /> Skill Coverage
-                  </h4>
-                  <div className="flex flex-wrap gap-1">
-                    {skillCoverage.length > 0 ? skillCoverage.map((s: string, i: number) => (
-                      <span key={i} className="text-[9px] font-bold text-[#0a192f] bg-white border border-[#e6e0d3] px-2 py-0.5">{s}</span>
-                    )) : <span className="text-[10px] text-[#0a192f]/40 font-serif italic">N/A</span>}
-                  </div>
-                </div>
-                <div>
-                  <h4 className="text-[8px] font-bold text-[#0a192f]/50 uppercase tracking-[0.2em] mb-2 flex items-center gap-1.5">
-                    <Crosshair className="w-3 h-3 text-[#c62828]" /> Role Coverage
-                  </h4>
-                  <div className="flex flex-wrap gap-1">
-                    {roleCoverage.length > 0 ? roleCoverage.map((r: string, i: number) => (
-                      <span key={i} className="text-[9px] font-bold uppercase tracking-[0.1em] text-white bg-[#0a192f] px-2 py-0.5">{r}</span>
-                    )) : <span className="text-[10px] text-[#0a192f]/40 font-serif italic">N/A</span>}
-                  </div>
-                </div>
+          return (
+            <div key={member.id} className="absolute flex flex-col items-center transform -translate-x-1/2 -translate-y-1/2 transition-transform hover:scale-110 z-20" style={{ top: pos.top, left: pos.left }}>
+              <div className="w-12 h-12 rounded-[14px] bg-white border border-[#e6e0d3] flex items-center justify-center shadow-md mb-2 overflow-hidden">
+                <img src={`https://api.dicebear.com/9.x/adventurer/svg?seed=${encodeURIComponent(member.name)}&backgroundColor=f5e6c8`} alt={member.name} className="w-full h-full object-cover" />
               </div>
-              <ul className="text-xs text-[#0a192f]/70 space-y-2 bg-white p-4 border border-[#e6e0d3]">
-                <li className="flex items-start gap-2">
-                  <span className="text-[#c62828] font-bold mt-0.5">✓</span> 
-                  <span className="leading-tight">{skillCoverage.length >= 4 ? "Strong skill distribution perfectly aligned with mission." : "Baseline skill evaluation passed."}</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-[#c62828] font-bold mt-0.5">✓</span> 
-                  <span className="leading-tight">{roleCoverage.length >= 4 ? "Key roles fulfilled for maximum efficiency." : "Roles structured adequately for the challenge."}</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-[#c62828] font-bold mt-0.5">✓</span> 
-                  <span className="leading-tight">Experience levels logically balanced to prevent crew volatility.</span>
-                </li>
-              </ul>
+              <span className="text-[9px] font-bold text-[#0a192f] uppercase tracking-widest bg-white px-2 py-1 rounded shadow-sm border border-[#e6e0d3]">
+                {member.name.split(' ')[0]} <span className="text-[#0a192f]/40 mx-0.5">|</span> <span className="text-[#0d5f66]">{member.preferredRole.substring(0, 4)}</span>
+              </span>
             </div>
-          )}
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-function CompassIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <circle cx="12" cy="12" r="10" />
-      <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-    </svg>
+          );
+        })}
+      </div>
+      
+      {/* Revealed Crew Block */}
+      <div className="bg-white border border-[#e6e0d3] rounded-xl px-12 py-6 text-center shadow-sm w-full max-w-[700px] mb-12">
+        <p className="text-[10px] font-bold text-[#0d5f66] uppercase tracking-[0.3em] mb-1">REVEALED CREW FORMATION</p>
+        <h2 className="text-2xl font-serif font-black text-[#da2528] tracking-widest uppercase mb-1">{team.name}</h2>
+        <p className="text-[10px] font-bold text-[#0a192f]/60 uppercase tracking-widest">
+          {members.length}-Rank Archetype — Matched for {team.assignedChallenge?.title || "Unknown"} Challenge
+        </p>
+      </div>
+      
+      {/* Metrics Row */}
+      <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-4">
+        {[
+          { label: "CLINICAL PACE", val: clinicalPace, color: "#0d5f66" },
+          { label: "ROLE COVERAGE", val: roleMatch, color: "#da2528" },
+          { label: "SKILL SYNERGY", val: skillSyn, color: "#d4af37" },
+          { label: "CHALLENGE MATCH", val: challengeMatch, color: "#0a192f" }
+        ].map((metric, i) => (
+          <div key={i} className="bg-white border border-white rounded-2xl p-6 shadow-sm flex flex-col items-center">
+            <p className="text-[9px] font-bold text-[#0a192f] uppercase tracking-[0.2em] mb-3">{metric.label}</p>
+            <p className={`text-3xl font-serif font-black mb-3`} style={{ color: metric.color }}>{metric.val}%</p>
+            <div className="w-full h-1.5 bg-[#f5e6c8] rounded-full overflow-hidden">
+               <div className="h-full rounded-full transition-all duration-1000" style={{ width: `${metric.val}%`, backgroundColor: metric.color }} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }

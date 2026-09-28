@@ -1,6 +1,5 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Users, Crosshair, Star, Anchor } from "lucide-react";
+import { Users, Crosshair, Star, Anchor, Shield } from "lucide-react";
 
 export function TeamCard({ team }: { team: any }) {
   const safeParse = (str: string | null | undefined): string[] => {
@@ -17,45 +16,35 @@ export function TeamCard({ team }: { team: any }) {
   const roleCoverage = safeParse(team.roleCoverage);
 
   return (
-    <Card className="group relative hover:shadow-2xl transition-all duration-500 bg-[#fdfbf7] border border-[#e6e0d3] h-full flex flex-col overflow-hidden rounded-none">
-      <div className="absolute top-0 left-0 w-full h-1 bg-[#c62828] group-hover:bg-[#d4af37] transition-colors" />
-      
-      <CardHeader className="pb-6 pt-6 border-b border-[#e6e0d3] bg-[#0a192f] text-white relative z-10 px-6 overflow-hidden">
-        <div className="absolute -right-6 -top-6 opacity-10 group-hover:rotate-45 transition-transform duration-1000 pointer-events-none">
-          <CompassIcon className="w-32 h-32" />
-        </div>
-        
-        <div className="flex justify-between items-start gap-4 relative z-10">
-          <div className="space-y-1">
-            <div className="flex items-center gap-1.5 mb-2">
-              <Anchor className="w-3.5 h-3.5 text-[#d4af37]" />
-              <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-[#d4af37]">Assembled Fleet</span>
-            </div>
-            <CardTitle className="text-3xl font-black text-white font-serif leading-none tracking-tight">{team.name}</CardTitle>
-            {team.assignedChallenge && (
-              <p className="text-xs font-medium text-[#fdfbf7]/60 mt-3 font-serif italic max-w-[200px] truncate">
-                Target: <span className="text-[#fdfbf7] not-italic font-sans font-bold tracking-widest uppercase">{team.assignedChallenge.title}</span>
-              </p>
-            )}
+    <Card className="group relative hover:shadow-2xl transition-all duration-300 bg-white border border-[#e6e0d3] h-full flex flex-col overflow-hidden rounded-3xl">
+      <CardHeader className="pb-4 pt-6 border-b border-[#e6e0d3] bg-[#fdfbf7] relative z-10 px-6">
+        <div className="flex justify-between items-start gap-4 mb-2">
+          <div className="flex items-center gap-1.5 bg-[#ebf8f9] text-[#0d5f66] px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border border-[#0d5f66]/20">
+            <Anchor className="w-3 h-3" /> FLEET UNIT
           </div>
-          <div className="flex flex-col items-center justify-center shrink-0 w-14 h-14 border-2 border-[#d4af37]/50 rounded-none bg-white/5 shadow-inner transform rotate-3 group-hover:rotate-0 transition-transform">
-            <span className="text-2xl font-black text-[#d4af37] leading-none">{Math.round(team.compatibilityScore || 0)}</span>
-            <span className="text-[7px] text-white/50 tracking-[0.2em] uppercase mt-1">Match</span>
+          <div className="bg-[#0a192f] text-white px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest shadow-md">
+            {Math.round(team.compatibilityScore || 0)}% SYNERGY
           </div>
         </div>
+        <CardTitle className="text-2xl font-black text-[#0a192f] font-serif leading-none tracking-tight mt-2">{team.name}</CardTitle>
+        {team.assignedChallenge && (
+          <p className="text-xs font-medium text-[#0a192f]/60 mt-1 font-serif italic truncate">
+            Target: <span className="text-[#0a192f] not-italic font-sans font-bold tracking-widest uppercase">{team.assignedChallenge.title}</span>
+          </p>
+        )}
       </CardHeader>
       
-      <CardContent className="pt-6 px-6 pb-6 flex-1 space-y-6 relative z-10 bg-[#fdfbf7]">
+      <CardContent className="pt-6 px-6 pb-6 flex-1 space-y-6 relative z-10">
         <div>
           <div className="flex justify-between items-center mb-4">
             <h4 className="text-[9px] font-bold text-[#0a192f]/50 uppercase tracking-[0.25em] flex items-center gap-1.5">
-              <Users className="w-3 h-3 text-[#c62828]" /> Roster ({team.members?.length || 0})
+              <Users className="w-3 h-3 text-[#da2528]" /> Deployed Roster ({team.members?.length || 0})
             </h4>
           </div>
           <div className="space-y-3">
             {team.members?.map((member: any) => (
-              <div key={member.id} className="flex items-center gap-3 group/member p-2 border border-transparent hover:border-[#e6e0d3] hover:bg-white transition-colors">
-                <div className="w-10 h-10 rounded-full border border-[#0a192f]/20 overflow-hidden bg-[#e6e0d3] shrink-0">
+              <div key={member.id} className="flex items-center gap-3 group/member p-2 rounded-xl hover:bg-[#fdfbf7] transition-colors border border-transparent hover:border-[#e6e0d3]">
+                <div className="w-10 h-10 rounded-full border border-[#e6e0d3] overflow-hidden bg-[#e6e0d3] shrink-0">
                   <img src={`https://api.dicebear.com/9.x/adventurer/svg?seed=${encodeURIComponent(member.name)}&backgroundColor=f5e6c8`} alt={member.name} className="w-full h-full object-cover" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -70,35 +59,29 @@ export function TeamCard({ team }: { team: any }) {
         <div className="pt-6 border-t border-[#e6e0d3] space-y-4">
           <div>
             <h4 className="text-[8px] font-bold text-[#0a192f]/50 uppercase tracking-[0.2em] mb-2 flex items-center gap-1.5">
-              <Star className="w-3 h-3 text-[#d4af37]" /> Skill Coverage
+              <Star className="w-3 h-3 text-[#d4af37]" /> Core Competencies
             </h4>
             <div className="flex flex-wrap gap-1">
-              {skillCoverage.map((s: string, i: number) => (
-                <span key={i} className="text-[9px] font-bold text-[#0a192f] bg-white border border-[#e6e0d3] px-2 py-0.5">{s}</span>
+              {skillCoverage.slice(0, 5).map((s: string, i: number) => (
+                <span key={i} className="text-[9px] font-bold text-[#0a192f] bg-[#fdfbf7] border border-[#e6e0d3] px-2 py-0.5 rounded shadow-sm">{s}</span>
               ))}
+              {skillCoverage.length > 5 && (
+                <span className="text-[9px] font-bold text-[#0a192f] bg-[#fdfbf7] border border-[#e6e0d3] px-2 py-0.5 rounded shadow-sm">+{skillCoverage.length - 5}</span>
+              )}
             </div>
           </div>
           <div>
             <h4 className="text-[8px] font-bold text-[#0a192f]/50 uppercase tracking-[0.2em] mb-2 flex items-center gap-1.5">
-              <Crosshair className="w-3 h-3 text-[#c62828]" /> Role Coverage
+              <Shield className="w-3 h-3 text-[#0d5f66]" /> Structural Roles
             </h4>
             <div className="flex flex-wrap gap-1">
-              {roleCoverage.map((r: string, i: number) => (
-                <span key={i} className="text-[9px] font-bold uppercase tracking-[0.1em] text-white bg-[#0a192f] px-2 py-0.5">{r}</span>
+              {roleCoverage.slice(0, 4).map((r: string, i: number) => (
+                <span key={i} className="text-[9px] font-bold uppercase tracking-[0.1em] text-[#0d5f66] bg-[#ebf8f9] px-2 py-0.5 rounded">{r}</span>
               ))}
             </div>
           </div>
         </div>
       </CardContent>
     </Card>
-  );
-}
-
-function CompassIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <circle cx="12" cy="12" r="10" />
-      <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-    </svg>
   );
 }
