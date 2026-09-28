@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Participant {
+  id              String   @id @default(cuid())
+  name            String
+  email           String?
+  avatar          String?
+  skills          String   // Stored as JSON string for SQLite compatibility
+  interests       String   // Stored as JSON string for SQLite compatibility
+  preferredRole   String
+  experienceLevel Int
+  
+  teamId          String?
+  team            Team?    @relation(fields: [teamId], references: [id])
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Challenge {
+  id              String   @id @default(cuid())
+  title           String
+  description     String
+  requiredSkills  String   // Stored as JSON string
+  requiredRoles   String   // Stored as JSON string
+  teamSize        Int
+  difficulty      String
+  
+  teams           Team[]
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Team {
+  id                 String   @id @default(cuid())
+  name               String
+  
+  challengeId        String?
+  assignedChallenge  Challenge? @relation(fields: [challengeId], references: [id])
+  
+  members            Participant[]
+  
+  compatibilityScore Float?
+  skillCoverage      String?  // Stored as JSON string
+  roleCoverage       String?  // Stored as JSON string
+  
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
